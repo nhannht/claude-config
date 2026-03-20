@@ -1,0 +1,17 @@
+# Ignore everything by default
+*
+
+# === Allow: core config ===
+!.gitignore
+!CLAUDE.md
+!settings.json
+
+# === Allow: hooks ===
+!hooks/
+!hooks/**
+
+# === Allow: skills ===
+!skills/
+!skills/**
+
+
