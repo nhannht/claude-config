@@ -3,7 +3,6 @@
 
 # === Allow: core config ===
 !.gitignore
-!CLAUDE.md
 !settings.json
 
 # === Allow: hooks ===
