@@ -33,8 +33,10 @@ skills/youtrack/SKILL.md
 skills/twitter_manipulator/SKILL.md
 skills/moodle-control/SKILL.md
 
-# === Deny: gstack symlinks (installed locally, not committed) ===
-skills/gstack/
+# === Allow: gstack submodule ===
+!skills/gstack
+
+# === Deny: gstack symlinks (auto-created, point into submodule) ===
 skills/benchmark
 skills/browse
 skills/canary
