@@ -232,7 +232,7 @@ function initTemplates(): void {
     "hooks/enforce-docker-ports.py",
     "hooks/enforce-secure-passwords.py",
     "skills/burpsuite-control/SKILL.md",
-    "skills/codeforce-control/SKILL.md",
+    "skills/codeforce-hcmus-control/SKILL.md",
     "skills/youtrack/SKILL.md",
   ];
 

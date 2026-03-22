@@ -30,7 +30,7 @@ config.secrets.yml
 skills/youtrack/SKILL.md
 
 # === Deny: private skills (symlinked from claude-config-private) ===
-skills/codeforce-control
+skills/codeforce-hcmus-control
 skills/moodle-control
 skills/burpsuite-control
 skills/discord-self-botting
