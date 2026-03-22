@@ -92,10 +92,9 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 
 ## Private Skills
 
-- Sensitive skills live in `nhannht/claude-config-private` (separate private repo)
-- Cloned to `~/claude-config-private/`, symlinked into `~/.claude/skills/` via `~/claude-config-private/link.sh`
+- Some skills are stored in a separate private repo and symlinked into `~/.claude/skills/`
 - Private skills are gitignored in this repo — never commit them here
-- New machine setup: `git clone ~/claude-config-private && ~/claude-config-private/link.sh`
+- Check memory for private repo location and setup instructions
 
 ## Pre-commit Hook
 
