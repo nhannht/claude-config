@@ -6,6 +6,7 @@
 !settings.json
 !.mcp.json
 !CLAUDE.md
+!README.md
 
 # === Deny: .env (generated, contains secrets) ===
 .env
