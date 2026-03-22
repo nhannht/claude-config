@@ -11,7 +11,7 @@ user_invocable: true
 ```bash
 claude mcp add google_workspace \
   -e GOOGLE_OAUTH_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com \
-  -e GOOGLE_OAUTH_CLIENT_SECRET=GOCSPX-YOUR_SECRET \
+  -e GOOGLE_OAUTH_CLIENT_SECRET=YOUR_SECRET \
   -- uvx workspace-mcp --tools drive --single-user
 ```
 
@@ -132,11 +132,12 @@ Tokens from machine A (client X) cannot be used on machine B (client Y). Each ma
 
 ```bash
 claude mcp add google_workspace \
-  -e GOOGLE_OAUTH_CLIENT_ID=REDACTED_OAUTH_CLIENT_ID \
-  -e GOOGLE_OAUTH_CLIENT_SECRET=REDACTED_OAUTH_SECRET \
+  -e GOOGLE_OAUTH_CLIENT_ID=$GOOGLE_OAUTH_CLIENT_ID \
+  -e GOOGLE_OAUTH_CLIENT_SECRET=$GOOGLE_OAUTH_CLIENT_SECRET \
   -- uvx workspace-mcp --tools drive --single-user
 ```
-Email: `REDACTED_EMAIL`
+
+Credentials stored in `~/.claude/.env` (gitignored).
 
 ## Available Drive Tools
 

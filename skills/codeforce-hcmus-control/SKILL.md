@@ -108,8 +108,7 @@ document.querySelector('input[type="submit"]').click();
 
 ### Current Account
 - Handle: `REDACTED_HANDLE`
-- Email: `REDACTED_EMAIL`
-- Password: `REDACTED_PASSWORD`
+- Credentials: stored in `~/.claude/.env` (gitignored)
 
 ## Group & Contest System
 
@@ -125,7 +124,7 @@ Login page: `https://REDACTED.contest.codeforces.com/enter`
 Fields:
 ```javascript
 document.querySelector('input[name="handleOrEmail"]').value = 'REDACTED_HANDLE';
-document.querySelector('input[name="password"]').value = 'REDACTED_PASSWORD';
+document.querySelector('input[name="password"]').value = process.env.CODEFORCES_PASSWORD;
 // Check remember me
 var cb = document.querySelector('input[name="remember"]');
 if (cb) cb.checked = true;

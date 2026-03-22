@@ -5,7 +5,7 @@ Automate posting, replying, and reading on X (twitter.com) via CDP + AT-SPI. See
 ## Prerequisites
 
 - Edge running with CDP + AT-SPI flags (see `/browser-control` Prerequisites)
-- Logged into X.com (account: REDACTED_EMAIL / @REDACTED_HANDLE)
+- Logged into X.com
 - CDP env: `/tmp/cdp-env/bin/python3` (websocket-client)
 
 ## X.com DOM Selectors (data-testid)
