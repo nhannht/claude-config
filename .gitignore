@@ -27,11 +27,19 @@ config.secrets.yml
 !skills/**
 
 # === Deny: generated SKILL.md (has .tmpl source) ===
-skills/codeforce-control/SKILL.md
-skills/burpsuite-control/SKILL.md
 skills/youtrack/SKILL.md
-skills/twitter_manipulator/SKILL.md
-skills/moodle-control/SKILL.md
+
+# === Deny: private skills (symlinked from claude-config-private) ===
+skills/codeforce-control
+skills/moodle-control
+skills/burpsuite-control
+skills/discord-self-botting
+skills/twitter_manipulator
+skills/zalo-control
+skills/tabfs-hacker
+skills/browser-control
+skills/asus-browser-control
+skills/mathematica-control
 
 # === Allow: gstack submodule ===
 !skills/gstack

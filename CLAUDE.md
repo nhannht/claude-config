@@ -73,7 +73,7 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 - `bun run generate.ts --check` — verify generated files are fresh
 
 ### New machine setup
-1. Clone the repo
+1. Clone the repo: `git clone --recurse-submodules`
 2. `bun install`
 3. Copy `config.secrets.example` → `config.secrets.yml`, fill in real values
 4. Run `bun run generate.ts`
@@ -82,6 +82,25 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 - NEVER put secrets in `.tmpl` files or `config.yml`
 - NEVER edit generated files — they have `AUTO-GENERATED` headers
 - ALWAYS run `bun run generate.ts` after template changes
+
+## Gstack
+
+- `skills/gstack` is a git submodule from `nhannht/gstack` (fork of `garrytan/gstack`)
+- Upstream remote configured inside submodule: `git -C skills/gstack fetch upstream`
+- Symlinks in `skills/` point into `skills/gstack/` for skill discovery — don't track them
+- New machine setup: `git clone --recurse-submodules` or `git submodule update --init`
+
+## Pre-commit Hook
+
+- `/claude-config-review` must pass before any `git commit` in this repo
+- Hook checks `sha256sum` of staged content against `/tmp/claude-config-review-passed`
+- If commit is blocked: run `/claude-config-review`, then retry the commit
+
+## Git History Hygiene
+
+- NEVER hardcode usernames, institutional names, or domain names in tracked files
+- Use `{{PLACEHOLDER}}` in `.tmpl` files for any value that identifies a person or institution
+- `git-filter-repo` was used to scrub history — do not re-introduce PII in commits
 
 ## Code Editing Tools (MANDATORY)
 
