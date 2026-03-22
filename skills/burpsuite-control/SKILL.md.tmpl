@@ -1,14 +1,12 @@
-<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run generate.ts -->
 # Skill: burpsuite-control
 
 Control Burp Suite Professional via AT-SPI (native Swing UI automation) and REST API (scans, configuration). Two complementary layers — AT-SPI for UI interaction, REST API for scan automation.
 
 ## Installation Location
 
-- Burp JAR: `REDACTED_PATH/burpsuite_pro_v2026.jar`
+- Burp JAR: `{{BURPSUITE_DIR}}/burpsuite_pro_v2026.jar`
 - Launcher script: `~/.local/bin/burpsuitepro`
-- REDACTED
+- {{BURPSUITE_LICENSE_LINE}}
 
 ## Two Control Layers
 
@@ -75,8 +73,8 @@ java \
   --add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED \
   --add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED \
   --add-opens=java.base/jdk.internal.org.objectweb.asm.Opcodes=ALL-UNNAMED \
-  REDACTED
-  -jar REDACTED_PATH/burpsuite_pro_v2026.jar
+  {{BURPSUITE_JAVA_AGENT_FLAGS}}
+  -jar {{BURPSUITE_DIR}}/burpsuite_pro_v2026.jar
 ```
 
 ### Full Startup Automation (project selection → main UI)
@@ -317,7 +315,7 @@ if ei:
 ### Project Selection Dialog (startup)
 
 ```
-[frame] "Burp Suite Professional v2026.x.x - REDACTED"
+[frame] "Burp Suite Professional v2026.x.x - {{BURPSUITE_LICENSE_FRAME}}"
   [radio button] "Temporary project in memory"     → click to select
   [radio button] "New project on disk"              → click to select
   [radio button] "Open existing project"            → click to select
@@ -440,7 +438,7 @@ DISPLAY=:0 xdotool key ctrl+n
 
 ## Security Notes
 
-REDACTED
+{{BURPSUITE_SECURITY_NOTES}}
 - REST API binds to `127.0.0.1:1337` only — not exposed externally
 
 ## Shutting Down Burp (CRITICAL)
