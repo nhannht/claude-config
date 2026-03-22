@@ -43,11 +43,7 @@ Submit:     /mod/assign/view.php?id={assignId}&action=editsubmission
 
 | Course | Moodle ID |
 |---|---|
-| REDACTED_COURSE |
-| REDACTED_COURSE |
-| REDACTED_COURSE |
-| REDACTED_COURSE |
-| REDACTED_COURSE |
+{{MOODLE_COURSE_IDS}}
 
 ## Key Page Data Extraction
 
@@ -158,7 +154,7 @@ resp = cdp("Runtime.evaluate", {"expression": f"""
         fd.append('sesskey', M.cfg.sesskey);
         fd.append('repo_id', '{discovered_repo_id}');
         fd.append('itemid', document.querySelector('input[name=files_filemanager]').value);
-        fd.append('author', 'REDACTED_NAME');
+        fd.append('author', '{{MOODLE_AUTHOR_NAME}}');
         fd.append('savepath', '/');
         fd.append('title', 'filename.cpp');
         fd.append('overwrite', '1');

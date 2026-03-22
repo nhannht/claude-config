@@ -114,8 +114,8 @@ document.querySelector('input[type="submit"]').click();
 
 ### Group URL
 - Base: `https://REDACTED.contest.codeforces.com`
-- Group ID: `REDACTED_GROUP_ID`
-- Full: `https://REDACTED.contest.codeforces.com/group/REDACTED_GROUP_ID/contests`
+- Group ID: `{{CODEFORCES_GROUP_ID}}`
+- Full: `https://REDACTED.contest.codeforces.com/group/{{CODEFORCES_GROUP_ID}}/contests`
 
 ### Login on Subdomain
 The group subdomain requires separate login even if logged in on main codeforces.com.
@@ -148,13 +148,13 @@ document.querySelector('input[type="submit"]').click();
 
 ### Contest URLs
 ```
-Dashboard:    /group/REDACTED_GROUP_ID/contest/{contestId}
-Problems:     /group/REDACTED_GROUP_ID/contest/{contestId}/problems
-Problem X:    /group/REDACTED_GROUP_ID/contest/{contestId}/problem/{letter}
-Submit:       /group/REDACTED_GROUP_ID/contest/{contestId}/submit
-My subs:      /group/REDACTED_GROUP_ID/contest/{contestId}/my
-Standings:    /group/REDACTED_GROUP_ID/contest/{contestId}/standings
-Submission:   /group/REDACTED_GROUP_ID/contest/{contestId}/submission/{submissionId}
+Dashboard:    /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}
+Problems:     /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/problems
+Problem X:    /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/problem/{letter}
+Submit:       /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/submit
+My subs:      /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/my
+Standings:    /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/standings
+Submission:   /group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/submission/{submissionId}
 ```
 
 Current contest: `{{CODEFORCES_CONTEST_ID}}` ({{CODEFORCES_CONTEST_NAME}})
@@ -225,7 +225,7 @@ Points table is in the sidebar under "Your points".
 
 To see compilation error details:
 ```
-/group/REDACTED_GROUP_ID/contest/{contestId}/submission/{submissionId}
+/group/{{CODEFORCES_GROUP_ID}}/contest/{contestId}/submission/{submissionId}
 ```
 
 ## Common Gotchas
