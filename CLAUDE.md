@@ -4,6 +4,10 @@
 
 When principles conflict: **correctness > simplicity > speed > elegance**
 
+## Editor
+
+- Always use normal (standard/readline) editor mode. Never use vim mode.
+
 ## Planning
 
 - Enter plan mode for any non-trivial task (3+ steps or architectural decisions)
