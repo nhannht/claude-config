@@ -123,13 +123,16 @@ The group subdomain requires separate login even if logged in on main codeforces
 Login page: `https://REDACTED.contest.codeforces.com/enter`
 Fields:
 ```javascript
+// Read credentials from ~/.claude/.env before injecting
 document.querySelector('input[name="handleOrEmail"]').value = 'REDACTED_HANDLE';
-document.querySelector('input[name="password"]').value = process.env.CODEFORCES_PASSWORD;
+document.querySelector('input[name="password"]').value = PASSWORD; // from $CODEFORCES_PASSWORD in ~/.claude/.env
 // Check remember me
 var cb = document.querySelector('input[name="remember"]');
 if (cb) cb.checked = true;
 document.querySelector('input[type="submit"]').click();
 ```
+
+> **Note**: Before running this snippet via CDP, read `~/.claude/.env` and substitute `PASSWORD` with the value of `$CODEFORCES_PASSWORD`.
 
 ### Contest Registration
 1. From contests page, click "Register »" link
