@@ -1,6 +1,6 @@
 # Viecz Project Description Review
 
-Review the Viecz REDACTED_UNIVERSITY I&E 2025 project description for consistency and quality.
+Review the Viecz project description for consistency and quality.
 
 ## Tone & Voice
 
@@ -12,7 +12,7 @@ Review the Viecz REDACTED_UNIVERSITY I&E 2025 project description for consistenc
 
 ## Content Rules
 
-- Every claim must be backed by a reference in `docs/general/THÔNG TIN CUỘC THI/references/` or data from YouTrack PROJECT-A-1.
+- Every claim must be backed by a reference in `docs/general/THÔNG TIN CUỘC THI/references/` or data from YouTrack.
 - No personal info (emails, tokens, real names of team members beyond what the competition requires).
 - "Trao đổi" (exchange), not altruism — everyone gets something (money, skill, help back, gratitude).
 - Viecz is a **coordination** platform, not a communication or social network app.
@@ -21,7 +21,7 @@ Review the Viecz REDACTED_UNIVERSITY I&E 2025 project description for consistenc
 
 ## Structure Checks
 
-- Sections must follow the REDACTED_UNIVERSITY I&E template strictly (7 sections).
+- Sections must follow the competition template strictly (7 sections).
 - Each section flows logically into the next — no repetition across sections.
 - Technical details belong in Section 4.3, not scattered elsewhere.
 - Vision/impact content belongs in Section 7, not in feature descriptions.

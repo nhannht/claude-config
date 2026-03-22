@@ -1,6 +1,6 @@
 # Skill: codeforce-control
 
-Control the REDACTED_UNIVERSITY Codeforces contest system (REDACTED.contest.codeforces.com) via CDP browser automation. Handles registration, login, contest enrollment, problem reading, solution submission, and verdict checking.
+Control the Codeforces contest system via CDP browser automation. Handles registration, login, contest enrollment, problem reading, solution submission, and verdict checking.
 
 ## Dependencies
 
@@ -113,14 +113,14 @@ document.querySelector('input[type="submit"]').click();
 ## Group & Contest System
 
 ### Group URL
-- Base: `https://REDACTED.contest.codeforces.com`
+- Base: `https://{{CODEFORCES_CONTEST_HOST}}`
 - Group ID: `{{CODEFORCES_GROUP_ID}}`
-- Full: `https://REDACTED.contest.codeforces.com/group/{{CODEFORCES_GROUP_ID}}/contests`
+- Full: `https://{{CODEFORCES_CONTEST_HOST}}/group/{{CODEFORCES_GROUP_ID}}/contests`
 
 ### Login on Subdomain
 The group subdomain requires separate login even if logged in on main codeforces.com.
 
-Login page: `https://REDACTED.contest.codeforces.com/enter`
+Login page: `https://{{CODEFORCES_CONTEST_HOST}}/enter`
 Fields:
 ```javascript
 // Read credentials from ~/.claude/.env before injecting
@@ -240,7 +240,7 @@ To see compilation error details:
 
 5. **Fraction simplify (F):** Denominator must be positive after simplification. Only `simplify()` and arithmetic methods reduce fractions — constructors and setters do NOT.
 
-6. **Cloudflare after registration:** The main codeforces.com may show Cloudflare again on first visit. The group subdomain (the contest subdomain...) usually doesn't after initial login.
+6. **Cloudflare after registration:** The main codeforces.com may show Cloudflare again on first visit. The group subdomain usually doesn't after initial login.
 
 ## Workflow Summary
 
@@ -249,7 +249,7 @@ To see compilation error details:
 2. Bypass Cloudflare with xdotool (if needed)
 3. Fill registration form via CDP
 4. Confirm email (check Gmail via CDP)
-5. Navigate to REDACTED.contest.codeforces.com
+5. Navigate to {{CODEFORCES_CONTEST_HOST}}
 6. Login via CDP
 7. Register for contest (individual participant)
 8. Read problems via CDP

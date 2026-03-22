@@ -8,7 +8,7 @@ Use this skill when the user wants to interact with browser tabs via TabFS, extr
 - **Browser:** Microsoft Edge Stable
 - **Extension ID:** `feeooocmaefkfcofecbajbdeomjmdpog`
 - **Native messaging:** `~/.config/microsoft-edge/NativeMessagingHosts/com.rsnous.tabfs.json`
-- **Detailed docs:** `~/REDACTED_USER-admin/docs/hacking/tabfs-hacks.md`
+- **Detailed docs:** `~/docs/hacking/tabfs-hacks.md`
 
 ## Quick Reference
 

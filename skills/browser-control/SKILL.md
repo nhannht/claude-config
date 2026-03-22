@@ -419,7 +419,7 @@ When automating specific web apps, load the dedicated skill for app-specific DOM
 | App | Skill | Why |
 |---|---|---|
 | Zalo (chat.zalo.me) | `/zalo-control` | File send/receive, contact nav, message handling |
-| Moodle (REDACTED_MOODLE_HOST) | (use browser-control directly) | Upload via Moodle draft file API |
+| Moodle | (use browser-control directly) | Upload via Moodle draft file API |
 
 ## General Safety Rules
 

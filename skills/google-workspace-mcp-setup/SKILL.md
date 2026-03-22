@@ -128,7 +128,7 @@ Tokens from machine A (client X) cannot be used on machine B (client Y). Each ma
 ### `gcloud` doesn't work for Sheets/Drive
 `gcloud auth print-access-token` only supports Cloud Platform scopes, NOT Workspace scopes. Must use workspace-mcp's OAuth flow.
 
-## REDACTED_USER's Current Setup
+## Current Setup
 
 ```bash
 claude mcp add google_workspace \

@@ -1,6 +1,6 @@
 # Skill: moodle-control
 
-Control REDACTED_UNIVERSITY Moodle (REDACTED_MOODLE_HOST) via CDP browser automation. Load alongside `asus-browser-control` for the CDP transport layer.
+Control {{UNIVERSITY_NAME}} Moodle ({{MOODLE_HOST}}) via CDP browser automation. Load alongside `asus-browser-control` for the CDP transport layer.
 
 ## Dependencies
 
@@ -13,7 +13,7 @@ Moodle uses Microsoft 365 OAuth. You cannot automate the login — the user must
 
 **Login flow:**
 1. Navigate to any Moodle page → redirects to login page
-2. The page shows "Microsoft 365 [ *.REDACTED_DOMAIN ]" button
+2. The page shows "Microsoft 365 [ *.{{MOODLE_DOMAIN}} ]" button
 3. Click it via JS: `document.querySelector('a').click()` on the button containing "Microsoft 365"
 4. **Stop and wait for user** to complete OAuth (may involve 2FA)
 5. After login, navigate to the target page
@@ -31,7 +31,7 @@ JSON.stringify({
 ## URL Patterns
 
 ```
-Base:       https://REDACTED_MOODLE_HOST
+Base:       https://{{MOODLE_HOST}}
 Course:     /course/view.php?id={courseId}
 Assignment: /mod/assign/view.php?id={assignId}
 Resource:   /mod/resource/view.php?id={resourceId}
@@ -39,7 +39,7 @@ Forum:      /mod/forum/view.php?id={forumId}
 Submit:     /mod/assign/view.php?id={assignId}&action=editsubmission
 ```
 
-## Course IDs (REDACTED_UNIVERSITY 2025-2026 Semester 2)
+## Course IDs ({{UNIVERSITY_NAME}} 2025-2026 Semester 2)
 
 | Course | Moodle ID |
 |---|---|
@@ -134,7 +134,7 @@ for repo_id in range(1, 16):
         break
 ```
 
-**Last known value:** `repo_id = 4` on REDACTED_MOODLE_HOST (as of 2026-03-14). Verify if uploads fail.
+**Last known value:** `repo_id = 4` on {{MOODLE_HOST}} (as of 2026-03-14). Verify if uploads fail.
 
 ### Step 4: Upload the actual file
 
@@ -165,7 +165,7 @@ resp = cdp("Runtime.evaluate", {"expression": f"""
 """, "awaitPromise": True})
 ```
 
-**Success response:** `{"url":"https://REDACTED_MOODLE_HOST/draftfile.php/...","id":...,"file":"filename.cpp"}`
+**Success response:** `{"url":"https://{{MOODLE_HOST}}/draftfile.php/...","id":...,"file":"filename.cpp"}`
 
 ### Step 5: Submit the form
 
