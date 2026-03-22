@@ -2,16 +2,10 @@
   "mcpServers": {
     "serena": {
       "type": "stdio",
-      "command": "uvx",
+      "command": "bash",
       "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "claude-code",
-        "--project",
-        "REDACTED_HOME/.claude"
+        "-c",
+        "exec uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context claude-code --project \"$HOME/.claude\""
       ],
       "env": {}
     }

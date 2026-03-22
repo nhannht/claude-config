@@ -1,12 +1,14 @@
 # Ignore everything by default
 *
 
-# === Allow: core config ===
+# === Allow: core config (hand-edited, no secrets) ===
 !.gitignore
 !settings.json
 !.mcp.json
 !CLAUDE.md
-!.env
+
+# === Deny: .env (generated, contains secrets) ===
+.env
 
 # === Allow: template system ===
 !generate.ts
@@ -20,13 +22,14 @@
 config.local.yml
 config.secrets.yml
 
-# === Allow: hooks ===
-!hooks/
-!hooks/**
-
 # === Allow: skills ===
 !skills/
 !skills/**
+
+# === Deny: generated SKILL.md (has .tmpl source) ===
+skills/codeforce-control/SKILL.md
+skills/burpsuite-control/SKILL.md
+skills/youtrack/SKILL.md
 
 # === Deny: gstack symlinks (installed locally, not committed) ===
 skills/gstack/
@@ -55,4 +58,3 @@ skills/setup-browser-cookies
 skills/setup-deploy
 skills/ship
 skills/unfreeze
-

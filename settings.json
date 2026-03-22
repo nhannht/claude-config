@@ -1,25 +1,6 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Glob",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/enforce-locate.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/enforce-docker-ports.py"
-          }
-        ]
-      }
-    ]
+    "PreToolUse": []
   },
   "statusLine": {
     "type": "command",

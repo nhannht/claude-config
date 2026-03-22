@@ -1,5 +1,3 @@
-<!-- AUTO-GENERATED from CLAUDE.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run generate.ts -->
 # CLAUDE.md
 
 ## Priority Order
@@ -58,43 +56,34 @@ When principles conflict: **correctness > simplicity > speed > elegance**
 
 ## Template System
 
-Config files in this repo are **generated** from `.tmpl` templates. NEVER edit generated files directly — edit the `.tmpl` source or `config.yml`, then regenerate.
+Only files with secrets or per-contest values use templates. Core config (`CLAUDE.md`, `settings.json`, `.mcp.json`) is committed directly — no hardcoded system paths, uses `~/.claude` or `$HOME/.claude` instead.
 
-### Files
-| File | Edit? | Committed? | Purpose |
-|---|---|---|---|
-| `*.tmpl` | YES | Yes | Template source (has placeholders like `VARIABLE_NAME` in double braces) |
-| `config.yml` | YES | Yes | Non-secret variables (project defaults) |
-| `config.local.yml` | YES | No | Machine-specific overrides |
-| `config.secrets.yml` | YES | No | Secrets only |
-| `config.secrets.example` | NO | Yes | Shows required secret keys |
-| `generate.ts` | YES | Yes | Generator script |
-| Generated files | NEVER | Yes (redacted) | Output — overwritten on regenerate |
+### What's templated
+| Template | Output (gitignored) | Why |
+|---|---|---|
+| `.env.tmpl` | `.env` | OAuth secrets, credentials |
+| `skills/*/SKILL.md.tmpl` | `skills/*/SKILL.md` | Contest IDs, license keys |
 
 ### Commands
-- `bun run generate.ts` — generate with real values (local use)
-- `bun run generate.ts --publish` — generate with secrets REDACTED (for commit)
+- `bun run generate.ts` — generate from templates + config
 - `bun run generate.ts --check` — verify generated files are fresh
-- `bun run generate.ts --init` — reverse-engineer existing files into templates (one-time)
 
 ### New machine setup
 1. Clone the repo
 2. `bun install`
 3. Copy `config.secrets.example` → `config.secrets.yml`, fill in real values
-4. Create `config.local.yml` with machine-specific paths (see `config.yml` for keys)
-5. Run `bun run generate.ts`
+4. Run `bun run generate.ts`
 
 ### Rules
 - NEVER put secrets in `.tmpl` files or `config.yml`
 - NEVER edit generated files — they have `AUTO-GENERATED` headers
 - ALWAYS run `bun run generate.ts` after template changes
-- ALWAYS run `bun run generate.ts --publish` before committing
 
 ## Code Editing Tools (MANDATORY)
 
 **CRITICAL: For ALL code files, you MUST use Serena MCP and JetBrains MCP tools instead of built-in Read/Edit/Grep/Write. Built-in tools are ONLY for non-code files (markdown, PDFs, JSON config, etc.).**
 
-The projectPath for all JetBrains calls is `REDACTED_HOME/.claude`.
+The projectPath for all JetBrains calls is `~/.claude`.
 
 ### When to use which tool
 
@@ -143,7 +132,7 @@ mcp__serena__search_for_pattern(substring_pattern="pattern", relative_path="src/
 
 **Always pass `projectPath`:**
 ```
-projectPath="REDACTED_HOME/.claude"
+projectPath="~/.claude"
 ```
 
 **File operations:**

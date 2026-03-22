@@ -6,12 +6,9 @@
 BURPSUITE_DIR: "REDACTED_PATH"
 CODEFORCES_CONTEST_ID: "678864"
 CODEFORCES_CONTEST_NAME: "OOP 2025B W1-W5"
-YOUTRACK_API_BASE: "https://youtrack.REDACTED_DOMAIN/api"
-
-# Default shebangs (override in config.local.yml per machine)
-PYTHON_SHEBANG: "#!/usr/bin/env python3"
 
 # Keys that are secrets (auto-detected by name pattern + this explicit list)
 _secrets:
   - GOOGLE_OAUTH_CLIENT_ID
   - CODEFORCES_EMAIL
+  - YOUTRACK_API_BASE
