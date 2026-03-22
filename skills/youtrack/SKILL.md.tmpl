@@ -15,10 +15,10 @@ All `curl` calls below assume: `curl -s --max-time 10 -H "Authorization: $YT_AUT
 
 ```bash
 # Search issues
-curl -s -H "Authorization: $YT_AUTH" "$YT_BASE/issues?fields=id,summary,project(shortName),customFields(name,value(name))&query=project:REDACTED_PROJECT+%23Unresolved"
+curl -s -H "Authorization: $YT_AUTH" "$YT_BASE/issues?fields=id,summary,project(shortName),customFields(name,value(name))&query=project:{{YOUTRACK_PROJECT_CODE}}+%23Unresolved"
 
 # Get single issue (full details)
-curl -s -H "Authorization: $YT_AUTH" "$YT_BASE/issues/PROJECT-172?fields=id,summary,description,project(shortName),reporter(login),customFields(name,value(name)),links(direction,linkType(name),issues(id,summary))"
+curl -s -H "Authorization: $YT_AUTH" "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-172?fields=id,summary,description,project(shortName),reporter(login),customFields(name,value(name)),links(direction,linkType(name),issues(id,summary))"
 
 # Create issue
 curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
@@ -28,27 +28,27 @@ curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
 # Create subtask (link as parent)
 # First create issue, then link:
 curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
-  "$YT_BASE/issues/PROJECT-NEW/links" \
-  -d '{"direction":"OUTWARD","linkType":{"name":"Subtask"},"issues":[{"id":"PROJECT-172"}]}'
+  "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-NEW/links" \
+  -d '{"direction":"OUTWARD","linkType":{"name":"Subtask"},"issues":[{"id":"{{YOUTRACK_PROJECT_CODE}}-172"}]}'
 
 # Update issue
 curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
-  "$YT_BASE/issues/PROJECT-172" -X POST \
+  "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-172" -X POST \
   -d '{"summary":"New title","description":"New desc","customFields":[{"name":"State","$type":"StateIssueCustomField","value":{"name":"In Progress"}}]}'
 
 # Add comment
 curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
-  "$YT_BASE/issues/PROJECT-172/comments" \
+  "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-172/comments" \
   -d '{"text":"Comment in **markdown**"}'
 
 # Attach file
 curl -s -H "Authorization: $YT_AUTH" \
   -F "file=@/path/to/file.pdf" \
-  "$YT_BASE/issues/PROJECT-172/attachments?fields=id,name"
+  "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-172/attachments?fields=id,name"
 
 # Log work
 curl -s -H "Authorization: $YT_AUTH" -H "Content-Type: application/json" \
-  "$YT_BASE/issues/PROJECT-172/timeTracking/workItems" \
+  "$YT_BASE/issues/{{YOUTRACK_PROJECT_CODE}}-172/timeTracking/workItems" \
   -d '{"duration":{"minutes":30},"text":"Description","type":{"name":"Development"}}'
 ```
 
@@ -103,5 +103,5 @@ curl -s -H "Authorization: $YT_AUTH" "$YT_BASE/admin/projects/0-3/customFields?f
 
 - Always use `fields=` parameter to limit response size
 - Use `$top` and `$skip` for pagination
-- Query syntax: `project:REDACTED_PROJECT #Unresolved for:me State:{In Progress}`
+- Query syntax: `project:{{YOUTRACK_PROJECT_CODE}} #Unresolved for:me State:{In Progress}`
 - API docs: https://www.jetbrains.com/help/youtrack/devportal/youtrack-rest-api.html

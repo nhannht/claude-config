@@ -30,6 +30,7 @@ config.secrets.yml
 skills/codeforce-control/SKILL.md
 skills/burpsuite-control/SKILL.md
 skills/youtrack/SKILL.md
+skills/twitter_manipulator/SKILL.md
 
 # === Deny: gstack symlinks (installed locally, not committed) ===
 skills/gstack/

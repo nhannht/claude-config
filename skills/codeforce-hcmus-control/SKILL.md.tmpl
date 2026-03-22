@@ -107,7 +107,7 @@ document.querySelector('input[type="submit"]').click();
 6. Confirmation email sent → find link in email, navigate to it
 
 ### Current Account
-- Handle: `REDACTED_HANDLE`
+- Handle: `{{CODEFORCES_HANDLE}}`
 - Credentials: stored in `~/.claude/.env` (gitignored)
 
 ## Group & Contest System
@@ -124,7 +124,7 @@ Login page: `https://REDACTED.contest.codeforces.com/enter`
 Fields:
 ```javascript
 // Read credentials from ~/.claude/.env before injecting
-document.querySelector('input[name="handleOrEmail"]').value = 'REDACTED_HANDLE';
+document.querySelector('input[name="handleOrEmail"]').value = '{{CODEFORCES_HANDLE}}';
 document.querySelector('input[name="password"]').value = PASSWORD; // from $CODEFORCES_PASSWORD in ~/.claude/.env
 // Check remember me
 var cb = document.querySelector('input[name="remember"]');

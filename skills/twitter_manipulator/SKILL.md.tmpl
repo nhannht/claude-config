@@ -110,7 +110,7 @@ resp = cdp("Runtime.evaluate", {"expression": """
 
 ```python
 # Navigate to profile
-cdp("Page.navigate", {"url": "https://x.com/REDACTED_HANDLE"})
+cdp("Page.navigate", {"url": "https://x.com/{{TWITTER_HANDLE}}"})
 time.sleep(4)
 
 # Read all visible tweets
