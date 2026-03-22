@@ -90,6 +90,13 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 - Symlinks in `skills/` point into `skills/gstack/` for skill discovery — don't track them
 - New machine setup: `git clone --recurse-submodules` or `git submodule update --init`
 
+## Private Skills
+
+- Sensitive skills live in `nhannht/claude-config-private` (separate private repo)
+- Cloned to `~/claude-config-private/`, symlinked into `~/.claude/skills/` via `~/claude-config-private/link.sh`
+- Private skills are gitignored in this repo — never commit them here
+- New machine setup: `git clone ~/claude-config-private && ~/claude-config-private/link.sh`
+
 ## Pre-commit Hook
 
 - `/claude-config-review` must pass before any `git commit` in this repo
