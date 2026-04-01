@@ -1,6 +1,6 @@
 # claude-config
 
-My [Claude Code](https://claude.ai/claude-code) user configuration — skills, settings, hooks, and templates.
+My [Claude Code](https://claude.ai/claude-code) user configuration — skills, settings, hooks, and plugins.
 
 ## Structure
 
@@ -9,9 +9,7 @@ My [Claude Code](https://claude.ai/claude-code) user configuration — skills, s
 ├── CLAUDE.md              # Agent instructions
 ├── settings.json          # Claude Code settings
 ├── .mcp.json              # MCP server config
-├── generate.ts            # Template generator
-├── config.yml             # Template variables (non-secret)
-├── config.secrets.example # Secret template (fill in your values)
+├── secrets.example.yml    # Secret schema (fill in your values)
 ├── skills/
 │   ├── gstack/            # Submodule: nhannht/gstack (fork of garrytan/gstack)
 │   ├── code-review/
@@ -19,8 +17,9 @@ My [Claude Code](https://claude.ai/claude-code) user configuration — skills, s
 │   ├── google-workspace-mcp-setup/
 │   ├── tw/                # Taskwarrior integration
 │   ├── youtrack/
-│   └── ...                # Private skills symlinked from separate repo
-└── .env.tmpl              # Secret template → .env (gitignored)
+│   └── ...
+└── plugins/               # Local plugin marketplace (gitignored)
+    └── private-skills/    # Private skills with sensitive data
 ```
 
 ## Setup
@@ -28,19 +27,16 @@ My [Claude Code](https://claude.ai/claude-code) user configuration — skills, s
 ```bash
 git clone --recurse-submodules https://github.com/nhannht/claude-config.git ~/.claude
 cd ~/.claude
-bun install
-cp config.secrets.example config.secrets.yml  # fill in real values
-bun run generate.ts
+cp secrets.example.yml secrets.yml  # fill in real values
 ```
 
-## Template System
+## Secrets
 
-Files with secrets use templates (`.tmpl` → generated output). Core config is committed directly.
+Private values (credentials, API keys, personal identifiers) live in `secrets.yml` (gitignored). Skills reference keys from this file — Claude reads and parses it at runtime.
 
-```bash
-bun run generate.ts          # generate from templates
-bun run generate.ts --check  # verify generated files are fresh
-```
+## Private Skills
+
+Private skills live in a local plugin at `plugins/private-skills/` (gitignored). They are loaded via a local marketplace configured in `settings.json` and available as `/private-skills:<skill-name>`.
 
 ## License
 

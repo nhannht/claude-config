@@ -1,6 +1,29 @@
 {
+  "env": {
+    "MCP_TIMEOUT": "30000"
+  },
   "hooks": {
-    "PreToolUse": []
+    "PreToolUse": [
+      {
+        "matcher": "Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/pre-glob-locate.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/pre-glob-locate.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": []
   },
   "statusLine": {
     "type": "command",
@@ -10,11 +33,26 @@
     "claude-md-management@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "clangd-lsp@claude-plugins-official": true
+    "clangd-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "dev-tools@jezweb-skills": true,
+    "plugin-dev@claude-plugins-official": true,
+    "private-skills@local": true
   },
-  "skipDangerousModePermissionPrompt": true,
-  "env": {
-    "MCP_TIMEOUT": "30000"
-  }
+  "extraKnownMarketplaces": {
+    "jezweb-skills": {
+      "source": {
+        "source": "github",
+        "repo": "jezweb/claude-skills"
+      }
+    },
+    "local": {
+      "source": {
+        "source": "directory",
+        "path": "/home/ubuntu/.claude/plugins/marketplaces/local"
+      }
+    }
+  },
+  "showThinkingSummaries": true,
+  "skipDangerousModePermissionPrompt": true
 }

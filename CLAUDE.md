@@ -1,5 +1,25 @@
 # CLAUDE.md
 
+## Telegram Notifications
+
+Run `tg-notify "<message>"` via Bash to ping the user on Telegram. Messages MUST be dynamic and contextual — never generic.
+
+**When to notify:**
+- After completing a multi-step task or significant piece of work
+- When blocked and waiting for user input
+- After a long-running build/test/deploy finishes
+- When you stop and are waiting for the user's next instruction
+
+**Message format — always include what happened:**
+- `tg-notify "Done: implemented email OTP auth — server + frontend, all tests pass"`
+- `tg-notify "Need input: should OTP expiry be 5 or 10 minutes?"`
+- `tg-notify "Tests finished: 1183 passed, 19 failed (pre-existing)"`
+- `tg-notify "Waiting: OTP auth done, ready for next task"`
+
+**Never send:**
+- Generic messages like "Waiting for your input" or "Notification from Claude Code"
+- Notifications for quick one-liner answers or trivial responses
+
 ## Priority Order
 
 When principles conflict: **correctness > simplicity > speed > elegance**
@@ -20,11 +40,14 @@ When principles conflict: **correctness > simplicity > speed > elegance**
 - Use subagents liberally to keep main context window clean
 - Offload research, exploration, and parallel analysis to subagents
 - One task per subagent for focused execution
+- **Any agent doing web search must use `model: haiku`** — never opus
+- **Any agent doing data extraction (e.g., non-scanned PDFs) must use `model: haiku`**
+- Opus is reserved for planning, analytics, and complex reasoning only
 
 ## Verification Before Done
 
 - Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
+- Diff behavior between master and your changes when relevant
 - Ask yourself: "Would a staff engineer approve this?"
 - Run tests, check logs, demonstrate correctness
 
@@ -51,37 +74,12 @@ When principles conflict: **correctness > simplicity > speed > elegance**
 - Create tasks for non-trivial work, mark complete as you go
 - Check in with the user before starting implementation on planned tasks
 
-## Self-Improvement Loop
+## Secrets
 
-- After ANY correction from the user, append the lesson to `.agent/lessons.md`
-- Format: brief rule + why it matters
-- Review `.agent/lessons.md` at session start for relevant patterns
-- Update or remove lessons that become stale
-
-## Template System
-
-Only files with secrets or per-contest values use templates. Core config (`CLAUDE.md`, `settings.json`, `.mcp.json`) is committed directly — no hardcoded system paths, uses `~/.claude` or `$HOME/.claude` instead.
-
-### What's templated
-| Template | Output (gitignored) | Why |
-|---|---|---|
-| `.env.tmpl` | `.env` | OAuth secrets, credentials |
-| `skills/*/SKILL.md.tmpl` | `skills/*/SKILL.md` | Contest IDs, license keys |
-
-### Commands
-- `bun run generate.ts` — generate from templates + config
-- `bun run generate.ts --check` — verify generated files are fresh
-
-### New machine setup
-1. Clone the repo: `git clone --recurse-submodules`
-2. `bun install`
-3. Copy `config.secrets.example` → `config.secrets.yml`, fill in real values
-4. Run `bun run generate.ts`
-
-### Rules
-- NEVER put secrets in `.tmpl` files or `config.yml`
-- NEVER edit generated files — they have `AUTO-GENERATED` headers
-- ALWAYS run `bun run generate.ts` after template changes
+- Private values live in `secrets.yml` (gitignored)
+- Skills reference keys from this file — Claude reads and parses it at runtime
+- Never commit `secrets.yml`; `secrets.example.yml` documents the schema
+- New machine setup: copy `secrets.example.yml` → `secrets.yml`, fill in real values
 
 ## Gstack
 
@@ -92,9 +90,24 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 
 ## Private Skills
 
-- Some skills are stored in a separate private repo and symlinked into `~/.claude/skills/`
-- Private skills are gitignored in this repo — never commit them here
-- Check memory for private repo location and setup instructions
+- Details in `~/.claude/rules/private-skill-plugin.md` (gitignored)
+- NEVER list skill names or repo URL in tracked files
+
+## New Machine Setup
+
+```bash
+# 1. Clone with submodules (gstack)
+git clone --recurse-submodules https://github.com/nhannht/claude-config.git ~/.claude
+
+# 2. Secrets
+cp secrets.example.yml secrets.yml  # then fill in real values
+
+# 3. Private skills plugin (see rules/private-skill-plugin.md for repo URL)
+# git clone <private-repo> ~/.claude/plugins/marketplaces/local/plugins/private-skills/
+
+# 4. Gstack symlinks (auto-created by link.sh)
+cd skills/gstack && bash link.sh
+```
 
 ## Pre-commit Hook
 
@@ -105,7 +118,7 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 ## Git History Hygiene
 
 - NEVER hardcode usernames, institutional names, or domain names in tracked files
-- Use `{{PLACEHOLDER}}` in `.tmpl` files for any value that identifies a person or institution
+- Put private values in `secrets.yml` or in the private-skills plugin
 - `git-filter-repo` was used to scrub history — do not re-introduce PII in commits
 
 ## Code Editing Tools (MANDATORY)
@@ -114,71 +127,67 @@ Only files with secrets or per-contest values use templates. Core config (`CLAUD
 
 The projectPath for all JetBrains calls is `~/.claude`.
 
-### When to use which tool
+### Tool Split: Serena = Code Intelligence, JetBrains = IDE Capabilities
 
-| Action | Tool | NOT this |
-|---|---|---|
-| See what's in a code file | `mcp__serena__jet_brains_get_symbols_overview` | `Read` |
-| Read a specific function/class body | `mcp__serena__jet_brains_find_symbol` with `include_body=true` | `Read` |
-| Read a full code file (rare, avoid) | `mcp__jetbrains__get_file_text_by_path` | `Read` |
-| Search code for a pattern | `mcp__serena__search_for_pattern` or `mcp__jetbrains__search_in_files_by_text` | `Grep` |
-| Find files by name | `mcp__jetbrains__find_files_by_name_keyword` or `mcp__serena__find_file` | `Glob` |
-| Replace a function/method body | `mcp__serena__replace_symbol_body` | `Edit` |
-| Add code after a symbol | `mcp__serena__insert_after_symbol` | `Edit` |
-| Add code before a symbol | `mcp__serena__insert_before_symbol` | `Edit` |
-| Rename a symbol project-wide | `mcp__serena__rename_symbol` or `mcp__jetbrains__rename_refactoring` | `Edit` with replace_all |
-| Small text replacement in file | `mcp__jetbrains__replace_text_in_file` | `Edit` |
-| Check for errors/warnings | `mcp__jetbrains__get_file_problems` | `Bash` tsc |
-| Find who references a symbol | `mcp__serena__jet_brains_find_referencing_symbols` | `Grep` |
-| Create a new code file | `mcp__jetbrains__create_new_file` | `Write` |
-| Format a file | `mcp__jetbrains__reformat_file` | nothing |
+**Serena is primary for all code reading, searching, navigating, and editing.** JetBrains MCP is used ONLY for IDE-level capabilities that Serena cannot provide. Do NOT use JetBrains tools for search/read/find when Serena covers it — this avoids tool overlap confusion and context waste.
 
-### Serena MCP Usage
+### Serena Tools (use these for code work)
 
-**Exploring code (token-efficient, start here):**
-```
-mcp__serena__jet_brains_get_symbols_overview(relative_path="path/to/file.ts")
-mcp__serena__jet_brains_find_symbol(name_path_pattern="SymbolName", include_body=true)
-mcp__serena__jet_brains_find_referencing_symbols(name_path="SYMBOL", relative_path="path/to/file.ts")
-```
-
-**Editing code (symbolic, precise):**
-```
-mcp__serena__replace_symbol_body(name_path="Symbol", relative_path="path/to/file.ts", body="new code")
-mcp__serena__insert_after_symbol(name_path="Symbol", relative_path="path/to/file.ts", body="new code")
-mcp__serena__rename_symbol(name_path="OldName", relative_path="path/to/file.ts", new_name="NewName")
-```
+| Action | Tool |
+|---|---|
+| See what's in a code file | `mcp__serena__jet_brains_get_symbols_overview` |
+| Read a specific function/class body | `mcp__serena__jet_brains_find_symbol` with `include_body=true` |
+| Search code for a pattern | `mcp__serena__search_for_pattern` |
+| Find files by name | `mcp__serena__find_file` |
+| Replace a function/method body | `mcp__serena__replace_symbol_body` |
+| Add code after a symbol | `mcp__serena__insert_after_symbol` |
+| Add code before a symbol | `mcp__serena__insert_before_symbol` |
+| Rename a symbol project-wide | `mcp__serena__rename_symbol` |
+| Find who references a symbol | `mcp__serena__jet_brains_find_referencing_symbols` |
+| Check type hierarchy | `mcp__serena__jet_brains_type_hierarchy` |
 
 **Serena gotcha - `replace_symbol_body` duplicates `export`:**
 Serena includes the symbol signature in the `body` param but does NOT remove the original `export const` prefix. After every `replace_symbol_body` call, immediately fix with `replace_text_in_file("export const export const", "export const")`.
 
-**Searching code:**
-```
-mcp__serena__search_for_pattern(substring_pattern="pattern", relative_path="src/", restrict_search_to_code_files=true)
-```
+### JetBrains Tools (use ONLY for unique IDE capabilities)
 
-### JetBrains MCP Usage
+| Action | Tool |
+|---|---|
+| Build/compile and get errors | `mcp__jetbrains__build_project` |
+| Check file errors/warnings (IntelliJ inspections) | `mcp__jetbrains__get_file_problems` |
+| Run custom inspection scripts | `mcp__jetbrains__run_inspection_kts` |
+| Get inspection KTS API/examples | `generate_inspection_kts_api`, `generate_inspection_kts_examples` |
+| Generate PSI tree | `mcp__jetbrains__generate_psi_tree` |
+| Run IDE run configurations | `mcp__jetbrains__execute_run_configuration` |
+| List run configurations | `mcp__jetbrains__get_run_configurations` |
+| Quick Documentation at cursor | `mcp__jetbrains__get_symbol_info` |
+| Read file with indentation mode | `mcp__jetbrains__read_file` (mode=indentation) |
+| Small text replacement in file | `mcp__jetbrains__replace_text_in_file` |
+| Create a new code file | `mcp__jetbrains__create_new_file` |
+| Format a file | `mcp__jetbrains__reformat_file` |
+| Open file in IDE editor | `mcp__jetbrains__open_file_in_editor` |
+| Run shell in IDE terminal | `mcp__jetbrains__execute_terminal_command` |
+| List project modules/deps/repos | `get_project_modules`, `get_project_dependencies`, `get_repositories` |
+| Run Jupyter notebook cells | `mcp__jetbrains__runNotebookCell` |
+
+**DO NOT use these JetBrains tools** (Serena already covers them):
+`search_text`, `search_regex`, `search_symbol`, `search_file`, `search_in_files_by_text`, `search_in_files_by_regex`, `find_files_by_glob`, `find_files_by_name_keyword`, `get_file_text_by_path`, `rename_refactoring`.
 
 **Always pass `projectPath`:**
 ```
 projectPath="~/.claude"
 ```
 
-**File operations:**
-```
-mcp__jetbrains__get_file_text_by_path(pathInProject="relative/path.ts", projectPath="...")
-mcp__jetbrains__replace_text_in_file(pathInProject="...", oldText="old", newText="new", projectPath="...")
-mcp__jetbrains__create_new_file(pathInProject="...", text="content", projectPath="...")
-mcp__jetbrains__get_file_problems(filePath="relative/path.ts", projectPath="...")
-```
-
 ### Decision flowchart
 
-1. **Need to understand a code file?** -> `get_symbols_overview` first, then `find_symbol` with `include_body=true`
-2. **Need to edit a function/component?** -> `find_symbol` to read, then `replace_symbol_body` to rewrite
-3. **Need to add new code?** -> `insert_after_symbol` or `insert_before_symbol`
-4. **Need to rename?** -> `rename_symbol` (Serena) or `rename_refactoring` (JetBrains)
-5. **Need to find usages?** -> `find_referencing_symbols`
-6. **Need to search?** -> `search_for_pattern` (Serena) or `search_in_files_by_text` (JetBrains)
-7. **Need to check errors?** -> `get_file_problems` (per file) or `build_project` (whole project)
-8. **Non-code file?** -> Use built-in Read/Edit/Write tools
+1. **Need to understand a code file?** → Serena `get_symbols_overview` first, then `find_symbol` with `include_body=true`
+2. **Need to edit a function/component?** → Serena `find_symbol` to read, then `replace_symbol_body` to rewrite
+3. **Need to add new code?** → Serena `insert_after_symbol` or `insert_before_symbol`
+4. **Need to rename?** → Serena `rename_symbol`
+5. **Need to find usages?** → Serena `find_referencing_symbols`
+6. **Need to search code?** → Serena `search_for_pattern`
+7. **Need to check errors?** → JetBrains `get_file_problems` (per file) or `build_project` (whole project)
+8. **Need Quick Documentation?** → JetBrains `get_symbol_info`
+9. **Need to run tests/builds?** → JetBrains `execute_run_configuration` or `build_project`
+10. **Need custom code analysis?** → JetBrains `run_inspection_kts`
+11. **Non-code file?** → Use built-in Read/Edit/Write tools

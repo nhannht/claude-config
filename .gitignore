@@ -7,40 +7,22 @@
 !.mcp.json
 !CLAUDE.md
 !README.md
+!secrets.example.yml
 
-# === Deny: .env (generated, contains secrets) ===
+# === Allow: rules ===
+!rules/
+!rules/**
+
+# === Deny: secrets and env ===
 .env
-
-# === Allow: template system ===
-!generate.ts
-!config.yml
-!config.secrets.example
-!package.json
-!bun.lock
-!*.tmpl
-
-# === Deny: local/secret config (NEVER commit) ===
-config.local.yml
-config.secrets.yml
+secrets.yml
 
 # === Allow: skills ===
 !skills/
 !skills/**
 
-# === Deny: generated SKILL.md (has .tmpl source) ===
-skills/youtrack/SKILL.md
-
-# === Deny: private skills (symlinked from claude-config-private) ===
-skills/codeforce-hcmus-control
-skills/moodle-control
-skills/burpsuite-control
-skills/discord-self-botting
-skills/twitter_manipulator
-skills/zalo-control
-skills/tabfs-hacker
-skills/browser-control
-skills/asus-browser-control
-skills/mathematica-control
+# === Deny: private skills plugin (gitignored, never commit) ===
+plugins/
 
 # === Allow: gstack submodule ===
 !skills/gstack

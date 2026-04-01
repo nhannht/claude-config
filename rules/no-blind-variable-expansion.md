@@ -1,0 +1,1 @@
+Never use shell variables from previous Bash invocations — they don't persist. Always re-derive or hardcode paths. Never run `cp`, `rm`, or `mv` with unverified variable expansion — an empty variable can expand to `/` or `/*` and cause catastrophic operations.

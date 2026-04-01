@@ -93,74 +93,70 @@ The section to inject:
 
 The projectPath for all JetBrains calls is `<ABSOLUTE_PROJECT_PATH>`.
 
-### When to use which tool
+### Tool Split: Serena = Code Intelligence, JetBrains = IDE Capabilities
 
-| Action | Tool | NOT this |
-|---|---|---|
-| See what's in a code file | `mcp__serena__jet_brains_get_symbols_overview` | `Read` |
-| Read a specific function/class body | `mcp__serena__jet_brains_find_symbol` with `include_body=true` | `Read` |
-| Read a full code file (rare, avoid) | `mcp__jetbrains__get_file_text_by_path` | `Read` |
-| Search code for a pattern | `mcp__serena__search_for_pattern` or `mcp__jetbrains__search_in_files_by_text` | `Grep` |
-| Find files by name | `mcp__jetbrains__find_files_by_name_keyword` or `mcp__serena__find_file` | `Glob` |
-| Replace a function/method body | `mcp__serena__replace_symbol_body` | `Edit` |
-| Add code after a symbol | `mcp__serena__insert_after_symbol` | `Edit` |
-| Add code before a symbol | `mcp__serena__insert_before_symbol` | `Edit` |
-| Rename a symbol project-wide | `mcp__serena__rename_symbol` or `mcp__jetbrains__rename_refactoring` | `Edit` with replace_all |
-| Small text replacement in file | `mcp__jetbrains__replace_text_in_file` | `Edit` |
-| Check for errors/warnings | `mcp__jetbrains__get_file_problems` | `Bash` tsc |
-| Find who references a symbol | `mcp__serena__jet_brains_find_referencing_symbols` | `Grep` |
-| Create a new code file | `mcp__jetbrains__create_new_file` | `Write` |
-| Format a file | `mcp__jetbrains__reformat_file` | nothing |
+**Serena is primary for all code reading, searching, navigating, and editing.** JetBrains MCP is used ONLY for IDE-level capabilities that Serena cannot provide. Do NOT use JetBrains tools for search/read/find when Serena covers it — this avoids tool overlap confusion and context waste.
 
-### Serena MCP Usage
+### Serena Tools (use these for code work)
 
-**Exploring code (token-efficient, start here):**
-```
-mcp__serena__jet_brains_get_symbols_overview(relative_path="path/to/file.ts")
-mcp__serena__jet_brains_find_symbol(name_path_pattern="SymbolName", include_body=true)
-mcp__serena__jet_brains_find_referencing_symbols(name_path="SYMBOL", relative_path="path/to/file.ts")
-```
-
-**Editing code (symbolic, precise):**
-```
-mcp__serena__replace_symbol_body(name_path="Symbol", relative_path="path/to/file.ts", body="new code")
-mcp__serena__insert_after_symbol(name_path="Symbol", relative_path="path/to/file.ts", body="new code")
-mcp__serena__rename_symbol(name_path="OldName", relative_path="path/to/file.ts", new_name="NewName")
-```
+| Action | Tool |
+|---|---|
+| See what's in a code file | `mcp__serena__jet_brains_get_symbols_overview` |
+| Read a specific function/class body | `mcp__serena__jet_brains_find_symbol` with `include_body=true` |
+| Search code for a pattern | `mcp__serena__search_for_pattern` |
+| Find files by name | `mcp__serena__find_file` |
+| Replace a function/method body | `mcp__serena__replace_symbol_body` |
+| Add code after a symbol | `mcp__serena__insert_after_symbol` |
+| Add code before a symbol | `mcp__serena__insert_before_symbol` |
+| Rename a symbol project-wide | `mcp__serena__rename_symbol` |
+| Find who references a symbol | `mcp__serena__jet_brains_find_referencing_symbols` |
+| Check type hierarchy | `mcp__serena__jet_brains_type_hierarchy` |
 
 **Serena gotcha - `replace_symbol_body` duplicates `export`:**
 Serena includes the symbol signature in the `body` param but does NOT remove the original `export const` prefix. After every `replace_symbol_body` call, immediately fix with `replace_text_in_file("export const export const", "export const")`.
 
-**Searching code:**
-```
-mcp__serena__search_for_pattern(substring_pattern="pattern", relative_path="src/", restrict_search_to_code_files=true)
-```
+### JetBrains Tools (use ONLY for unique IDE capabilities)
 
-### JetBrains MCP Usage
+| Action | Tool |
+|---|---|
+| Build/compile and get errors | `mcp__jetbrains__build_project` |
+| Check file errors/warnings (IntelliJ inspections) | `mcp__jetbrains__get_file_problems` |
+| Run custom inspection scripts | `mcp__jetbrains__run_inspection_kts` |
+| Get inspection KTS API/examples | `generate_inspection_kts_api`, `generate_inspection_kts_examples` |
+| Generate PSI tree | `mcp__jetbrains__generate_psi_tree` |
+| Run IDE run configurations | `mcp__jetbrains__execute_run_configuration` |
+| List run configurations | `mcp__jetbrains__get_run_configurations` |
+| Quick Documentation at cursor | `mcp__jetbrains__get_symbol_info` |
+| Read file with indentation mode | `mcp__jetbrains__read_file` (mode=indentation) |
+| Small text replacement in file | `mcp__jetbrains__replace_text_in_file` |
+| Create a new code file | `mcp__jetbrains__create_new_file` |
+| Format a file | `mcp__jetbrains__reformat_file` |
+| Open file in IDE editor | `mcp__jetbrains__open_file_in_editor` |
+| Run shell in IDE terminal | `mcp__jetbrains__execute_terminal_command` |
+| List project modules/deps/repos | `get_project_modules`, `get_project_dependencies`, `get_repositories` |
+| Run Jupyter notebook cells | `mcp__jetbrains__runNotebookCell` |
+
+**DO NOT use these JetBrains tools** (Serena already covers them):
+`search_text`, `search_regex`, `search_symbol`, `search_file`, `search_in_files_by_text`, `search_in_files_by_regex`, `find_files_by_glob`, `find_files_by_name_keyword`, `get_file_text_by_path`, `rename_refactoring`.
 
 **Always pass `projectPath`:**
 ```
 projectPath="<ABSOLUTE_PROJECT_PATH>"
 ```
 
-**File operations:**
-```
-mcp__jetbrains__get_file_text_by_path(pathInProject="relative/path.ts", projectPath="...")
-mcp__jetbrains__replace_text_in_file(pathInProject="...", oldText="old", newText="new", projectPath="...")
-mcp__jetbrains__create_new_file(pathInProject="...", text="content", projectPath="...")
-mcp__jetbrains__get_file_problems(filePath="relative/path.ts", projectPath="...")
-```
-
 ### Decision flowchart
 
-1. **Need to understand a code file?** -> `get_symbols_overview` first, then `find_symbol` with `include_body=true`
-2. **Need to edit a function/component?** -> `find_symbol` to read, then `replace_symbol_body` to rewrite
-3. **Need to add new code?** -> `insert_after_symbol` or `insert_before_symbol`
-4. **Need to rename?** -> `rename_symbol` (Serena) or `rename_refactoring` (JetBrains)
-5. **Need to find usages?** -> `find_referencing_symbols`
-6. **Need to search?** -> `search_for_pattern` (Serena) or `search_in_files_by_text` (JetBrains)
-7. **Need to check errors?** -> `get_file_problems` (per file) or `build_project` (whole project)
-8. **Non-code file?** -> Use built-in Read/Edit/Write tools
+1. **Need to understand a code file?** → Serena `get_symbols_overview` first, then `find_symbol` with `include_body=true`
+2. **Need to edit a function/component?** → Serena `find_symbol` to read, then `replace_symbol_body` to rewrite
+3. **Need to add new code?** → Serena `insert_after_symbol` or `insert_before_symbol`
+4. **Need to rename?** → Serena `rename_symbol`
+5. **Need to find usages?** → Serena `find_referencing_symbols`
+6. **Need to search code?** → Serena `search_for_pattern`
+7. **Need to check errors?** → JetBrains `get_file_problems` (per file) or `build_project` (whole project)
+8. **Need Quick Documentation?** → JetBrains `get_symbol_info`
+9. **Need to run tests/builds?** → JetBrains `execute_run_configuration` or `build_project`
+10. **Need custom code analysis?** → JetBrains `run_inspection_kts`
+11. **Non-code file?** → Use built-in Read/Edit/Write tools
 ```
 
 Replace `<ABSOLUTE_PROJECT_PATH>` with the actual project path in all injected content.

@@ -1,5 +1,11 @@
 {
   "mcpServers": {
+    "context-hub": {
+      "type": "stdio",
+      "command": "/home/ubuntu/.bun/bin/chub-mcp",
+      "args": [],
+      "env": {}
+    },
     "serena": {
       "type": "stdio",
       "command": "bash",

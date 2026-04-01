@@ -8,20 +8,14 @@ user-invocable: true
 
 ## Overview
 
-Three-pass code review: mechanical linters, JetBrains IDE inspections, then Claude semantic review. Only applies checklist sections relevant to the changed files. Blocks commits unless all CRITICAL and WARNING findings are resolved.
+Iterative code review loop: lint + IDE inspect → simplify/fix → re-check until clean. Blocks commits unless all CRITICAL and WARNING findings are resolved.
 
 ## Usage
 
 ```bash
-# Review all staged changes
 /code-review
-
-# Review specific path only
 /code-review server/internal/handlers/
-
-# Review with focus area
 /code-review --focus security
-/code-review --focus performance
 ```
 
 ## Arguments
@@ -56,27 +50,22 @@ If ALL changed files are non-code (docs, config, formatting only):
 - Create the marker file (see Marker File section below)
 - Stop. No further review needed.
 
-### Step 4 - Pass 1: Linters (Mechanical)
+### Step 4 - Review Loop
 
-Run platform-specific linters on changed files ONLY. Use whatever linter the project has configured:
+Repeat the following cycle until no CRITICAL or WARNING findings remain, up to **3 iterations max**.
 
-**Common linters by platform:**
+#### 4a - Linters (Mechanical)
+
+Run platform-specific linters on changed files ONLY:
+
 - Go: `golangci-lint run --new-from-rev=HEAD ./...`
 - TypeScript/JS: `eslint` or `biome` (check project config)
 - Python: `ruff check` or `flake8`
 - Rust: `cargo clippy`
 
-If the project has no linter configured, skip this pass and note it.
+If no linter configured, skip and note it.
 
-**If any linter fails:**
-- Report each linter error as a **CRITICAL** finding
-- Do NOT proceed to Pass 2
-- Do NOT create the marker file
-- Tell the user: "Fix linter errors before re-running /code-review"
-
-**If all linters pass:** proceed to Pass 2.
-
-### Step 5 - Pass 2: JetBrains IDE Inspections
+#### 4b - JetBrains IDE Inspections
 
 If JetBrains MCP is available, run `mcp__jetbrains__get_file_problems` on each changed code file. Skip non-code files. Call in parallel batches (up to 10 files).
 
@@ -84,123 +73,41 @@ If JetBrains MCP is available, run `mcp__jetbrains__get_file_problems` on each c
 - JetBrains `ERROR` -> **CRITICAL**
 - JetBrains `WARNING` -> **WARNING**
 
-**If JetBrains MCP is unavailable:**
-- Log: "JetBrains IDE not connected - skipping IDE inspection pass"
-- Continue to Pass 3. Do NOT fail the review.
+If JetBrains MCP is unavailable, log and skip.
 
-### Step 6 - Pass 3: Claude Semantic Review
+#### 4c - Simplify (Semantic Review + Fix)
 
-Read changed files using Serena/JetBrains tools for code files when available. Fall back to `Read` tool otherwise.
+Invoke `/simplify` on the changed files. This launches 3 parallel review agents:
 
-Apply ONLY the checklist sections relevant to the detected platforms.
+1. **Code Reuse** — finds duplicated logic, existing utilities that should be used instead
+2. **Code Quality** — redundant state, parameter sprawl, copy-paste, leaky abstractions, unnecessary comments
+3. **Efficiency** — unnecessary work, missed concurrency, hot-path bloat, memory leaks, N+1 patterns
 
-Focus on things linters **cannot** catch: logic bugs, security gaps, architectural issues, design problems.
+**Key difference from standalone `/simplify`:** Within the review loop, simplify **fixes issues directly** — then the loop re-runs linters and IDE inspections to verify the fixes didn't introduce new problems.
 
-### Step 7 - Report
+#### 4d - Check & Loop
+
+After simplify fixes:
+- Re-run linters (4a) and IDE inspections (4b) on the modified files
+- If new CRITICAL or WARNING findings → loop back to 4c (simplify fixes again)
+- If clean → exit loop
+- If iteration 3 reached and still failing → exit loop, report remaining findings
+
+### Step 5 - Report
 
 Output findings grouped by severity: **CRITICAL -> WARNING -> INFO -> OK**
 
-Include the source of each finding (Linter, IDE, or Claude) in the report.
-
-### Step 8 - Severity Gate
-
-- If ANY **CRITICAL** or **WARNING** findings exist -> do NOT create marker. Report: "Fix these before committing."
-- If only **INFO** or no findings -> create the marker file (see below).
-
-## Marker File (MANDATORY)
-
-After review completes, the marker file determines whether `git commit` will be allowed by the pre-commit hook (if configured).
-
-**If ANY CRITICAL or WARNING findings remain:**
-- Do NOT create the marker file
-- Tell the user to fix issues and re-run `/code-review`
-
-**If only INFO or no findings:**
-```bash
-git diff --cached | sha256sum | cut -d' ' -f1 > /tmp/claude-code-review-passed
-```
-This hash ensures the marker is only valid for the exact staged content that was reviewed.
-
-## Checklist
-
-### All Languages
-
-**Logic**:
-- Off-by-one errors in loops and slices/arrays
-- Nil/null/undefined pointer dereferences
-- Missing error handling or swallowed errors
-- Race conditions in concurrent code
-- Edge cases: empty inputs, zero values, negative numbers, boundary conditions
-
-**Security**:
-- SQL/NoSQL injection (raw string concatenation in queries)
-- Hardcoded secrets, tokens, or credentials
-- Missing auth checks on protected endpoints/routes
-- Input validation gaps (user-supplied data used without sanitization)
-- Sensitive data in logs (passwords, tokens, emails, PII)
-- XSS vulnerabilities (unescaped user content in HTML)
-- Path traversal (user input in file paths)
-- Command injection (user input in shell commands)
-
-**Design Simplicity**:
-- Is there a simpler, more standard approach? Prefer stdlib/framework solutions over custom implementations
-- Could this be done with fewer abstractions, fewer files, or fewer indirections?
-- If the change adds a new pattern, is it justified or does the codebase already have one that works?
-
-**Testability**:
-- Is the code structured for unit testing? Dependencies should be injectable, not hardcoded
-- Can you test the logic without spinning up external services?
-- Are side effects isolated from pure logic?
-
-**Code Duplication**:
-- Is the same logic repeated across files? Extract to shared function if 3+ occurrences
-- Copy-paste from other parts of the codebase carrying stale logic or wrong variable names
-
-**Error Message Quality**:
-- User-facing errors must be actionable
-- Internal errors must include debug context
-- No secrets, tokens, or PII in error messages or logs
-
-**Backwards Compatibility**:
-- API changes must be additive (no breaking removals without versioning)
-- Database migrations must be reversible
-- New environment variables must have sensible defaults
-
-**Maintainability (6-Month Test)**:
-- No magic numbers - use named constants
-- Inline "why" comments for non-obvious decisions
-- Functions under 50 lines; split if longer
-- No dead code, commented-out blocks, or TODO placeholders for real features
-
-### Performance (All Languages)
-
-**Memory & Resources**:
-- Goroutine/thread/task leaks (no cancellation, no cleanup)
-- Observable/subscription/listener leaks (missing unsubscribe/cleanup)
-- Unbounded in-memory caches or collections that grow without eviction
-- Unclosed resources (file handles, HTTP bodies, DB connections, streams)
-
-**Database** (when applicable):
-- N+1 query patterns
-- Missing indexes on filtered/sorted/joined columns
-- Unbounded queries without LIMIT
-- Large transactions holding locks too long
-
-**Network** (when applicable):
-- HTTP clients without timeouts
-- Missing retry with backoff on transient failures
-- Missing cancellation propagation
-
-## Report Format
+Include the source of each finding (Linter, IDE, or Simplify) and which iteration found it.
 
 ```markdown
 ## Pre-Commit Code Review
 
 **Files changed**: N
 **Platforms detected**: go, typescript, ...
-**Checklist sections applied**: [relevant sections]
+**Review iterations**: N
 **Pass 1 (Linters)**: PASSED / FAILED / SKIPPED
 **Pass 2 (JetBrains IDE)**: PASSED / FAILED / SKIPPED
+**Pass 3 (Simplify)**: N issues found, M fixed
 **Findings**: X critical, Y warning, Z info
 
 ---
@@ -230,6 +137,70 @@ This hash ensures the marker is only valid for the exact staged content that was
 
 - `file.ext` - Brief note
 ```
+
+### Step 6 - Severity Gate
+
+- If ANY **CRITICAL** or **WARNING** findings remain after all iterations -> do NOT create marker. Report: "Fix these before committing."
+- If only **INFO** or no findings -> create the marker file (see below).
+
+## Marker File (MANDATORY)
+
+**If ANY CRITICAL or WARNING findings remain:**
+- Do NOT create the marker file
+- Tell the user to fix issues and re-run `/code-review`
+
+**If only INFO or no findings:**
+```bash
+git diff --cached | sha256sum | cut -d' ' -f1 > /tmp/claude-code-review-passed
+```
+This hash ensures the marker is only valid for the exact staged content that was reviewed.
+
+## Checklist
+
+The following checklist guides both the IDE inspections and the simplify pass. Linters handle mechanical checks; simplify handles semantic ones.
+
+### All Languages
+
+**Logic**:
+- Off-by-one errors in loops and slices/arrays
+- Nil/null/undefined pointer dereferences
+- Missing error handling or swallowed errors
+- Race conditions in concurrent code
+- Edge cases: empty inputs, zero values, negative numbers, boundary conditions
+
+**Security**:
+- SQL/NoSQL injection (raw string concatenation in queries)
+- Hardcoded secrets, tokens, or credentials
+- Missing auth checks on protected endpoints/routes
+- Input validation gaps (user-supplied data used without sanitization)
+- Sensitive data in logs (passwords, tokens, emails, PII)
+- XSS vulnerabilities (unescaped user content in HTML)
+- Path traversal (user input in file paths)
+- Command injection (user input in shell commands)
+
+**Backwards Compatibility**:
+- API changes must be additive (no breaking removals without versioning)
+- Database migrations must be reversible
+- New environment variables must have sensible defaults
+
+### Performance (All Languages)
+
+**Memory & Resources**:
+- Goroutine/thread/task leaks (no cancellation, no cleanup)
+- Observable/subscription/listener leaks (missing unsubscribe/cleanup)
+- Unbounded in-memory caches or collections that grow without eviction
+- Unclosed resources (file handles, HTTP bodies, DB connections, streams)
+
+**Database** (when applicable):
+- N+1 query patterns
+- Missing indexes on filtered/sorted/joined columns
+- Unbounded queries without LIMIT
+- Large transactions holding locks too long
+
+**Network** (when applicable):
+- HTTP clients without timeouts
+- Missing retry with backoff on transient failures
+- Missing cancellation propagation
 
 ## Tools & Model Requirements
 
