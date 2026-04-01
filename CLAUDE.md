@@ -1,78 +1,6 @@
 # CLAUDE.md
 
-## Telegram Notifications
-
-Run `tg-notify "<message>"` via Bash to ping the user on Telegram. Messages MUST be dynamic and contextual — never generic.
-
-**When to notify:**
-- After completing a multi-step task or significant piece of work
-- When blocked and waiting for user input
-- After a long-running build/test/deploy finishes
-- When you stop and are waiting for the user's next instruction
-
-**Message format — always include what happened:**
-- `tg-notify "Done: implemented email OTP auth — server + frontend, all tests pass"`
-- `tg-notify "Need input: should OTP expiry be 5 or 10 minutes?"`
-- `tg-notify "Tests finished: 1183 passed, 19 failed (pre-existing)"`
-- `tg-notify "Waiting: OTP auth done, ready for next task"`
-
-**Never send:**
-- Generic messages like "Waiting for your input" or "Notification from Claude Code"
-- Notifications for quick one-liner answers or trivial responses
-
-## Priority Order
-
-When principles conflict: **correctness > simplicity > speed > elegance**
-
-## Editor
-
-- Always use normal (standard/readline) editor mode. Never use vim mode.
-
-## Planning
-
-- Enter plan mode for any non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately — don't push forward on a broken approach
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
-
-## Subagent Strategy
-
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- One task per subagent for focused execution
-- **Any agent doing web search must use `model: haiku`** — never opus
-- **Any agent doing data extraction (e.g., non-scanned PDFs) must use `model: haiku`**
-- Opus is reserved for planning, analytics, and complex reasoning only
-
-## Verification Before Done
-
-- Never mark a task complete without proving it works
-- Diff behavior between master and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-
-## Autonomous Bug Fixing
-
-- When given a clear bug report, just fix it — don't ask for hand-holding
-- Point at logs, errors, failing tests, then resolve them
-- When the bug is ambiguous or multiple valid fixes exist, clarify once before diving in
-
-## Code Quality
-
-- **Simplicity first**: Make every change as simple as possible. Minimal code impact.
-- **No laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- Challenge hacky fixes, but don't gold-plate — if it's correct and simple, ship it.
-
-## Scope Management
-
-- If a task is unclear or smells too large, ask before assuming
-- A 10-second clarification beats 10 minutes in the wrong direction
-
-## Task Management
-
-- Use Taskwarrior (`/tw`) for task tracking — not files, not built-in task tools
-- Create tasks for non-trivial work, mark complete as you go
-- Check in with the user before starting implementation on planned tasks
+This is `nhannht/claude-config` — Claude Code user configuration repo. Behavioral rules live in `~/.claude/rules/`.
 
 ## Secrets
 
@@ -90,7 +18,7 @@ When principles conflict: **correctness > simplicity > speed > elegance**
 
 ## Private Skills
 
-- Details in `~/.claude/rules/private-skill-plugin.md` (gitignored)
+- Details in `~/.claude/rules/private-skill-plugin.md`
 - NEVER list skill names or repo URL in tracked files
 
 ## New Machine Setup
@@ -102,8 +30,7 @@ git clone --recurse-submodules https://github.com/nhannht/claude-config.git ~/.c
 # 2. Secrets
 cp secrets.example.yml secrets.yml  # then fill in real values
 
-# 3. Private skills plugin (see rules/private-skill-plugin.md for repo URL)
-# git clone <private-repo> ~/.claude/plugins/marketplaces/local/plugins/private-skills/
+# 3. Private skills plugin (see rules/private-skill-plugin.md for setup steps)
 
 # 4. Gstack symlinks (auto-created by link.sh)
 cd skills/gstack && bash link.sh

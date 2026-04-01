@@ -1,0 +1,3 @@
+- Use Taskwarrior (`/tw`) for task tracking — not files, not built-in task tools
+- Create tasks for non-trivial work, mark complete as you go
+- Check in with the user before starting implementation on planned tasks

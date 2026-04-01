@@ -1,0 +1,4 @@
+- Enter plan mode for any non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately — don't push forward on a broken approach
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity

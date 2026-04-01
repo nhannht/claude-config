@@ -1,0 +1,6 @@
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- One task per subagent for focused execution
+- **Any agent doing web search must use `model: haiku`** — never opus
+- **Any agent doing data extraction (e.g., non-scanned PDFs) must use `model: haiku`**
+- Opus is reserved for planning, analytics, and complex reasoning only

@@ -1,0 +1,3 @@
+- When given a clear bug report, just fix it — don't ask for hand-holding
+- Point at logs, errors, failing tests, then resolve them
+- When the bug is ambiguous or multiple valid fixes exist, clarify once before diving in

@@ -1,0 +1,2 @@
+- If a task is unclear or smells too large, ask before assuming
+- A 10-second clarification beats 10 minutes in the wrong direction

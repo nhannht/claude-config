@@ -1,0 +1,3 @@
+- **Simplicity first**: Make every change as simple as possible. Minimal code impact.
+- **No laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- Challenge hacky fixes, but don't gold-plate — if it's correct and simple, ship it.
