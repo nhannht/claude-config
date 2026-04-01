@@ -1,8 +1,24 @@
-Private skills live in a standalone git repo at `~/.claude/plugins/marketplaces/local/plugins/private-skills/`.
+If private skills (`/private-skills:*`) are missing or the plugin fails to load, tell the user to set up the private-skills plugin:
 
-- It is NOT a submodule — it's an independent repo inside the gitignored `plugins/` directory
-- To push changes: `cd` into the plugin dir, then `git add`, `commit`, `push` as normal
-- Plugin manifest: `.claude-plugin/plugin.json`
-- Skills are discovered automatically by Claude Code via the local marketplace
-- NEVER list skill names or repo URL in tracked files
-- Repo URL and setup details are in memory or `secrets.yml`
+1. Add the local marketplace (if not already configured):
+   ```
+   /plugin marketplace add ./plugins/marketplaces/local
+   ```
+   Or from CLI: `claude plugin marketplace add local --source directory --path ~/.claude/plugins/marketplaces/local`
+
+2. Clone the private repo into the marketplace plugins directory:
+   ```bash
+   git clone <private-repo-url> ~/.claude/plugins/marketplaces/local/plugins/private-skills/
+   ```
+   (Repo URL is in memory — check `reference_private_skills.md`. Do not hardcode it here.)
+
+3. Install and enable the plugin:
+   ```
+   /plugin install private-skills@local
+   /plugin enable private-skills@local
+   ```
+
+4. Reload plugins:
+   ```
+   /reload-plugins
+   ```

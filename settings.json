@@ -19,6 +19,48 @@
           {
             "type": "command",
             "command": "/home/ubuntu/.claude/hooks/pre-glob-locate.sh"
+          },
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/block-secrets-read.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/block-secrets-read.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__serena__replace_symbol_body",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/post-serena-format.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__serena__insert_after_symbol",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/post-serena-format.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__serena__insert_before_symbol",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/post-serena-format.sh"
           }
         ]
       }

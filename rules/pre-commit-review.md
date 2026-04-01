@@ -1,0 +1,1 @@
+Before any `git commit` in this repo, run `/claude-config-review` first. The pre-commit hook will block commits that haven't passed review. If the commit is blocked, run the review skill, fix any CRITICAL findings, then retry.
