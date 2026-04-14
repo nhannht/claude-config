@@ -85,3 +85,4 @@ task <id> denotate "old note to remove"
 - `epic:` and `milestone:` are optional but recommended for non-trivial work
 - Use `depends:` to model subtasks — no separate parent/child system needed
 - Use `task <id> annotate` for progress notes, not new tasks
+- **Descriptions must be explicit and technical** — state the specific file/component, what changes, and why. Bad: "No loading indicator while NLP processes large notes". Good: "Add spinner in TimelineBlock.tsx during NLP parsing — currently blank while ChronoParser processes large files". A reader should know *where* to look and *what* to do without asking follow-up questions.

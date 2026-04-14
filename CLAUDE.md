@@ -48,6 +48,35 @@ cd skills/gstack && bash link.sh
 - Put private values in `secrets.yml` or in the private-skills plugin
 - `git-filter-repo` was used to scrub history — do not re-introduce PII in commits
 
+## Working Style
+
+- **Step-by-step over concurrent**: Careful sequential execution beats spawning multiple agents. Limit agent usage — prefer doing work directly.
+- **Correctness over speed**: Follow all tool rules (Serena/JetBrains for code) even when it feels slower. Working output matters more than fast output.
+- **Efficiency over speed**: Always prefer Serena, JetBrains, and Context7 MCP tools over built-in Read/Edit/Grep/Write/WebSearch for code and library docs. These tools are more precise, context-aware, and produce better results. Never fall back to built-in tools for code files just because they feel faster — efficiency (right tool, right result) beats raw speed.
+- **Verify between steps**: Build and test after each phase, not just at the end.
+- **Agents must follow the same rules**: When spawning agents, include the Serena/JetBrains tool table in the prompt. Never tell agents to use built-in Read/Edit/Write for code files.
+
+## Dev Servers
+
+- **Always start dev servers in a new tmux window** of the current tmux session, not in the background of the current shell
+- Use `tmux new-window -n <name> '<command>'` to launch (e.g., `tmux new-window -n 'remotion' 'cd /path && bun run studio'`)
+- This keeps dev server output visible and manageable without polluting the Claude Code shell
+- **NEVER bind any server to `0.0.0.0`** — always bind to `100.64.0.2` (Tailscale IP only). This applies to ALL servers: filebrowser, http.server, vite, next, bun, etc. Binding to `0.0.0.0` exposes the port on all interfaces including public IPs.
+- **Always enable authentication** for any hosted service (filebrowser, Jupyter, dashboards, etc.). Never start with `--noauth`, `--no-auth`, or equivalent flags. If a service is intentionally started without auth (e.g., localhost-only dev tool), **explicitly warn the user** before launching: state the service name, port, and that it has no authentication.
+
+## File Search
+
+- **Always use `locate`** to find files on the system. Never use Glob or `find` as first choice.
+- `locate` is faster and searches the entire filesystem. Glob misses files in unexpected locations.
+
+## JavaScript / Node.js Runtime
+
+- **Always use `bun`** as the package manager and Node.js replacement
+- Never use `npm`, `yarn`, or `pnpm` — use `bun install`, `bun run`, `bun add`, `bun remove`, etc.
+- Use `bun.lock` (not `package-lock.json` or `yarn.lock`)
+- For running scripts: `bun run build`, `bun run test`, `bun vitest`, etc.
+- If a project has `package-lock.json` or `yarn.lock`, delete it and run `bun install` to generate `bun.lock`
+
 ## Code Editing Tools (MANDATORY)
 
 **CRITICAL: For ALL code files, you MUST use Serena MCP and JetBrains MCP tools instead of built-in Read/Edit/Grep/Write. Built-in tools are ONLY for non-code files (markdown, PDFs, JSON config, etc.).**

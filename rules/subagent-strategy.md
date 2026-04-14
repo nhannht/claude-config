@@ -1,6 +1,7 @@
 - Use subagents liberally to keep main context window clean
 - Offload research, exploration, and parallel analysis to subagents
 - One task per subagent for focused execution
-- **Any agent doing web search must use `model: haiku`** — never opus
-- **Any agent doing data extraction (e.g., non-scanned PDFs) must use `model: haiku`**
-- Opus is reserved for planning, analytics, and complex reasoning only
+- **Never use `model: opus`** unless the user explicitly demands it in the moment
+- **Complex tasks (multi-step reasoning, synthesis, code changes) → `model: sonnet`**
+- **Simple tasks (web search, data extraction, JSON output, file ops) → `model: haiku`**
+- **All code-touching agents must be instructed to use Serena MCP and JetBrains MCP** — include the tool table from CLAUDE.md in the agent prompt so they know the tool names and usage. Never tell agents to "use built-in Read/Edit/Write for code files"

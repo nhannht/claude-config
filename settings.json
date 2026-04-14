@@ -1,6 +1,19 @@
 {
   "env": {
-    "MCP_TIMEOUT": "30000"
+    "MCP_TIMEOUT": "30000",
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
+    "CLAUDE_CODE_NO_FLICKER": "1",
+    "CLAUDE_CODE_DEBUG_LOG_LEVEL": "verbose"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(tg-notify Done: fixed content-speech sync for S2.2, S3.2, S3.3, S3.4. Created remotion-perf private skill. Memo optimizations committed earlier.:*)",
+      "WebFetch(domain:www.paulgraham.com)",
+      "Bash(curl -s https://www.paulgraham.com/brandage.html)",
+      "Bash(tg-notify:*)",
+      "Bash(chmod +x:*)"
+    ],
+    "defaultMode": "dontAsk"
   },
   "hooks": {
     "PreToolUse": [
@@ -65,7 +78,18 @@
         ]
       }
     ],
-    "Stop": []
+    "Stop": [],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/ubuntu/.claude/hooks/post-compact-notify.sh"
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
@@ -76,10 +100,8 @@
     "claude-code-setup@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "dev-tools@jezweb-skills": true,
     "plugin-dev@claude-plugins-official": true,
-    "private-skills@local": true
+    "private-skills@ikarus": true
   },
   "extraKnownMarketplaces": {
     "jezweb-skills": {
@@ -88,13 +110,17 @@
         "repo": "jezweb/claude-skills"
       }
     },
-    "local": {
+    "ikarus": {
       "source": {
         "source": "directory",
-        "path": "/home/ubuntu/.claude/plugins/marketplaces/local"
+        "path": "/home/ubuntu/.claude/plugins/marketplaces/ikarus"
       }
     }
   },
+  "effortLevel": "medium",
+  "autoCompactWindow": 200000,
+  "autoUpdatesChannel": "stable",
   "showThinkingSummaries": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "model": "sonnet"
 }
